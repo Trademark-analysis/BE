@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    # .env에 있는 SERVER와 DATABASE 변수를 스프링 yml에 합침
+    url: jdbc:sqlserver://${AZURE_SQL_SERVER}:1433;database=${AZURE_SQL_DATABASE};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    username: ${AZURE_SQL_USER}
+    password: ${AZURE_SQL_PASSWORD}
+
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
