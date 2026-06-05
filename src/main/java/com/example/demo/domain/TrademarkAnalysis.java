@@ -13,6 +13,10 @@ public class TrademarkAnalysis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 사용자가 입력한 상표명 저장 컬럼 추가
+    @Column(name = "trademark_name", length = 255)
+    private String trademarkName;
+
     @Column(name = "service_description", length = 1000)
     private String serviceDescription;
 
@@ -45,6 +49,10 @@ public class TrademarkAnalysis {
     }
 
     public TrademarkAnalysis() {}
+
+    // 추가된 trademarkName의 Getter, Setter
+    public String getTrademarkName() { return trademarkName; }
+    public void setTrademarkName(String trademarkName) { this.trademarkName = trademarkName; }
 
     public Long getId() { return id; }
     public String getServiceDescription() { return serviceDescription; }

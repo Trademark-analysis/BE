@@ -37,11 +37,13 @@ public class TrademarkController {
      */
     @PostMapping("/analyze")
     public ResponseEntity<AnalysisResponse> analyzeAndSave(
+            @RequestParam("trademarkName") String trademarkName, // 프론트한테 받기!
             @RequestParam("serviceDescription") String serviceDescription,
             @RequestParam("selectedCodes") List<String> selectedCodes,
             @RequestParam("image") MultipartFile imageFile) {
 
-        TrademarkAnalysisDto resultDto = trademarkService.saveAndAnalyze(serviceDescription, selectedCodes, imageFile);
+        // Service 단으로 trademarkName도 함께 넘겨서 파이썬으로 토스
+        TrademarkAnalysisDto resultDto = trademarkService.saveAndAnalyze(trademarkName, serviceDescription, selectedCodes, imageFile);
         AnalysisResponse response = new AnalysisResponse("SUCCESS", resultDto);
         return ResponseEntity.ok(response);
     }
