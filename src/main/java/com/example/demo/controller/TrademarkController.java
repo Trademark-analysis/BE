@@ -32,6 +32,12 @@ public class TrademarkController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/similar-groups")
+    public ResponseEntity<Map<String, Object>> getSimilarGroups(@RequestBody ServiceInfoRequest request) {
+        Map<String, Object> response = this.trademarkService.getSimilarGroups(request);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * [STEP 03] 선택된 유사군 코드들과 상표 이미지를 전달받아 ML 분석 결과를 반환
      */

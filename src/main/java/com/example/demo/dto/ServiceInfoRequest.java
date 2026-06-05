@@ -1,9 +1,37 @@
 package com.example.demo.dto;
 
-public class ServiceInfoRequest {
-    private String description; // "중고거래 플랫폼 운영" 등 서비스 설명
+import java.util.List;
 
-    // Getter, Setter, 기본 생성자
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+public class ServiceInfoRequest {
+
+    private String trademarkName;
+    private String serviceDescription;
+    private List<Integer> selectedNiceClasses;
+
+    public ServiceInfoRequest() {
+    }
+
+    public String getTrademarkName() {
+        return trademarkName;
+    }
+
+    public void setTrademarkName(String trademarkName) {
+        this.trademarkName = trademarkName;
+    }
+
+    public String getServiceDescription() {
+        return serviceDescription;
+    }
+
+    public void setServiceDescription(String serviceDescription) {
+        this.serviceDescription = serviceDescription;
+    }
+
+    public List<Integer> getSelectedNiceClasses() {
+        return selectedNiceClasses;
+    }
+
+    public void setSelectedNiceClasses(List<Integer> selectedNiceClasses) {
+        this.selectedNiceClasses = selectedNiceClasses;
+    }
 }

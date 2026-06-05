@@ -36,11 +36,72 @@ public class TrademarkService {
     }
 
     public List<ClassificationResponse> getClassificationCodes(ServiceInfoRequest request) {
-        List<ClassificationResponse> list = new ArrayList<>();
-        list.add(new ClassificationResponse("제30류", "커피, 차, 음식료품"));
-        list.add(new ClassificationResponse("제9류", "컴퓨터, 소프트웨어, 전자기기"));
-        list.add(new ClassificationResponse("제42류", "소프트웨어 개발, IT 서비스"));
-        return list;
+        try {
+            Map<String, Object> body = new HashMap<>();
+            body.put("trademarkName", request.getTrademarkName());
+            body.put("serviceDescription", request.getServiceDescription());
+
+            List<Map<String, Object>> mlResponse = webClient.post()
+                    .uri("/api/ml/classification")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(List.class)
+                    .block();
+
+            List<ClassificationResponse> result = new ArrayList<>();
+
+            if (mlResponse == null) {
+                return result;
+            }
+
+            for (Map<String, Object> item : mlResponse) {
+                String code = String.valueOf(item.get("code"));
+                String description = String.valueOf(item.get("description"));
+
+                result.add(new ClassificationResponse(code, description));
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            System.out.println("ML 니스분류 추천 통신 예외: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public Map<String, Object> getSimilarGroups(ServiceInfoRequest request) {
+        try {
+            Map<String, Object> body = new HashMap<>();
+            body.put("trademarkName", request.getTrademarkName());
+            body.put("serviceDescription", request.getServiceDescription());
+            body.put("selectedNiceClasses", request.getSelectedNiceClasses());
+
+            Map<String, Object> mlResponse = webClient.post()
+                    .uri("/api/ml/similar-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            if (mlResponse == null) {
+                return new HashMap<>();
+            }
+
+            return mlResponse;
+
+        } catch (Exception e) {
+            System.out.println("ML 유사군 코드 추천 통신 예외: " + e.getMessage());
+
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("trademarkName", request.getTrademarkName());
+            fallback.put("nice_codes", new ArrayList<>());
+            fallback.put("similar_group_codes", new ArrayList<>());
+            fallback.put("message", "유사군 코드 추천 실패");
+
+            return fallback;
+        }
     }
 
     @Transactional
@@ -76,6 +137,8 @@ public class TrademarkService {
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
+            System.out.println("=== ML 전체 응답 확인 ===");
+            System.out.println(mlResponse);
 
             // [무한 루프 차단 수정]: 파이썬 성공 사인이 오면 껍데기 여부와 무관하게 무조건 추출 시작
             if (mlResponse != null) {
