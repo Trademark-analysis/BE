@@ -113,6 +113,7 @@ public class TrademarkService {
         String similarityScore = "0%";
         Boolean isAvailable = true;
         String resultMessage = "분석 진행 완료";
+        Object distinctivenessScore = null;
 
         // 프론트엔드 결과 화면에 리스트를 쏴주기 위해 파이썬 통신 원본 결과 객체를 담아둘 저장소 생성
         List<Map<String, Object>> similarTrademarkList = new ArrayList<>();
@@ -161,6 +162,15 @@ public class TrademarkService {
                 if (mlResponse.get("similar_trademark") != null) {
                     similarTrademarkList = (List<Map<String, Object>>) mlResponse.get("similar_trademark");
                 }
+
+                if (mlResponse.get("distinctiveness_score") != null) {
+                    distinctivenessScore = mlResponse.get("distinctiveness_score");
+                } else if (finalReport != null && finalReport.get("식별력 검사") instanceof Map) {
+                    Map<String, Object> distinctivenessCheck =
+                            (Map<String, Object>) finalReport.get("식별력 검사");
+
+                    distinctivenessScore = distinctivenessCheck.get("score");
+                }
             }
 
         } catch (Exception e) {
@@ -189,6 +199,7 @@ public class TrademarkService {
         // DTO 패키징 및 프론트 전송용 커스텀 확장
         TrademarkAnalysisDto dto = new TrademarkAnalysisDto(savedEntity);
         dto.setSimilarTrademark(similarTrademarkList);
+        dto.setDistinctivenessScore(distinctivenessScore);
 
         return dto;
     }
