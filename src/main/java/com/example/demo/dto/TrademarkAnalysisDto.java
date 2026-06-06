@@ -16,6 +16,7 @@ public class TrademarkAnalysisDto {
     private String resultMessage;
     private LocalDateTime createdAt;
     private List<String> selectedCodes;
+    private Object distinctiveness_score;
 
     // [무한 루프 탈출 ]: 파이썬이 뱉은 유사 상표 후보 리스트(similar_trademark)를 보관할 주머니 추가
     private List<Map<String, Object>> similar_trademark;
@@ -41,6 +42,14 @@ public class TrademarkAnalysisDto {
 
     public void setSimilarTrademark(List<Map<String, Object>> similar_trademark) {
         this.similar_trademark = similar_trademark;
+    }
+
+    public Object getDistinctivenessScore() {
+        return distinctiveness_score;
+    }
+
+    public void setDistinctivenessScore(Object distinctiveness_score) {
+        this.distinctiveness_score = distinctiveness_score;
     }
 
     // trademarkName의 Getter
